@@ -1,0 +1,22 @@
+---
+# handlers file for ansible-litecoind
+- name: restart litecoind
+  systemd:
+    name: litecoind
+    state: restarted
+    daemon_reload: yes
+
+- name: restart ltc_exporter
+  systemd:
+    name: ltc_exporter
+    state: restarted
+    daemon_reload: yes
+
+- name: reload prometheus
+  uri:
+    url: http://localhost:9090/-/reload
+    method: POST
+  listen: "reload prometheus"
+  delegate_to: "{{ item }}"
+  delegate_facts: True
+  with_items: "{{ groups.prometheus | default([]) }}"

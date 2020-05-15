@@ -1,0 +1,84 @@
+---
+- name: Create ltc user
+  user:
+    name: "{{ ltc_user }}"
+    home: "{{ ltc_exporter_home }}"
+
+- name: Create service file for ltc_exporter
+  template:
+    src: ltc_exporter.service.j2
+    dest: /etc/systemd/system/ltc_exporter.service
+  notify: restart ltc_exporter
+
+- name: Ensure ltc_exporter_home exists
+  file:
+    state: directory
+    path: "{{ ltc_exporter_home }}"
+    owner: "{{ ltc_user }}"
+    recurse: true
+
+- name: Copy ltc_exporter script and requirements
+  copy:
+    src: "{{ item }}"
+    dest: "{{ ltc_exporter_home }}/"
+    owner: "{{ ltc_user }}"
+    group: "{{ ltc_user }}"
+  with_items:
+    - ltc_exporter.py
+    - requirements.txt
+  notify: restart ltc_exporter
+
+- name: Create config file for ltc_exporter
+  template:
+    src: config.ini.j2
+    dest: "{{ ltc_exporter_home }}/config.ini"
+  notify: restart ltc_exporter
+
+- name: Install virtualenv
+  yum:
+    name: "{{ item }}"
+  with_items:
+     - python34
+     - python34-devel
+     - python-virtualenv
+     - libxml2-devel
+     - libxml2
+     - libxslt-devel
+     - libxslt
+     - gcc
+     - gcc-c++
+
+- name: Install pip via pip (need for pip update)
+  pip:
+    name: pip
+    virtualenv: "{{ ltc_exporter_home }}/env"
+    virtualenv_python: "python3"
+    state: forcereinstall
+  become: true
+  become_user: "{{ ltc_user }}"
+
+- name: Install requirements via pip
+  pip:
+    requirements: "{{ ltc_exporter_home }}/requirements.txt"
+    virtualenv: "{{ ltc_exporter_home }}/env"
+    state: present
+  become: true
+  become_user: "{{ ltc_user }}"
+  notify: restart ltc_exporter
+
+- name: Create config for ltc exporter
+  template: src=ltc_exporter.ini.j2 dest={{ ltc_exporter_home }}/config.ini owner={{ ltc_user }}
+  notify: restart ltc_exporter
+
+- name: Create prometheus job file for metrics checking
+  template: src=prometheus_ltc.yaml.j2 dest=/etc/prometheus/hosts/ltc-{{ inventory_hostname }}.yaml
+  delegate_to: "{{ item }}"
+  delegate_facts: True
+  notify: reload prometheus
+  with_items: "{{ groups.prometheus | default([]) }}"
+
+- name: Ensure ltc exporter started and enabled
+  systemd:
+    name: ltc_exporter
+    state: started
+    enabled: yes

@@ -1,0 +1,16 @@
+[Unit]
+Description=ltc_exporter provides some blockhain metrics for prometheus
+After=network.target
+Requires=network.target
+
+[Service]
+ExecStart={{ ltc_exporter_home }}/env/bin/python {{ ltc_exporter_home }}/ltc_exporter.py -c {{ ltc_exporter_home }}/config.ini
+User=root
+Restart={{ restart_policy|default('on-failure') }}
+RestartSec={{ restart_timeout|default('100ms') }}
+StartLimitBurst=5
+StartLimitInterval=300
+
+
+[Install]
+WantedBy=multi-user.target

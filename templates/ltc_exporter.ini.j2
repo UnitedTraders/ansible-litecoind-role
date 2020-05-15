@@ -1,0 +1,12 @@
+[ltc]
+server_address = localhost
+etalon_server_address = api.cryptoapis.io
+etalon_server_key = {{ ltc_cryptoapis_key }}
+etalon_server_uri = /v1/bc/ltc/{{ litecoin_network }}/blocks/latest
+rpc_user = {{ litecoind_rpcuser }}
+rpc_password = {{ litecoind_rpcpassword }}
+rpc_port = {{ litecoind_rpcport }}
+
+[prometheus]
+exporter_port = {{ ltc_exporter_port }}
+scrape_interval = {{ ltc_exporter_interval }}

@@ -1,0 +1,14 @@
+---
+# defaults file for ansible-litecoind
+
+litecoind_home: '/opt/litecoind'
+litecoind_versoin: 'latest'
+litecoind_rpcuser: 'rpcuser'
+litecoind_rpcpassword: 'rpcpassword'
+litecoind_rpcport: 9322
+litecoin_network: 'mainnet'
+ltc_user: 'ltc'
+ltc_cryptoapis_key: longapikey
+ltc_exporter_home: '/opt/ltc_exporter'
+ltc_exporter_port: 8557
+ltc_exporter_interval: 600

@@ -1,0 +1,14 @@
+[Unit]
+Description=Litecoind
+Requires=docker.service
+After=docker.service
+
+[Service]
+WorkingDirectory={{ litecoind_home }}
+ExecStart=/usr/bin/docker run --rm --name litecoind --network host -v {{ litecoind_home }}/data:/home/litecoin/.litecoin uphold/litecoin-core:{{ litecoind_versoin }} -printtoconsole -rpcuser={{ litecoind_rpcuser }} -rpcpassword={{ litecoind_rpcpassword }} {% if litecoin_network == 'testnet' %} -testnet=1 {% endif %} -rpcallowip=0.0.0.0/0 -txindex=1
+
+ExecStop=/usr/bin/docker stop litecoind
+User=root
+
+[Install]
+WantedBy=multi-user.target
