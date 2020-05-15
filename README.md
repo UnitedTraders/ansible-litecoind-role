@@ -13,7 +13,7 @@ This repository contains role for instaling container with Litecoind-core blockc
 * `ltc_user: 'ltc'` - restricted user for monitoring script
 * `ltc_exporter_home: '/opt/ltc_exporter'` - directory for ltc exporter script
 * `ltc_exporter_port: 8557` - port for ltc exporter script
-* `ltc_cryptoapis_key: longapikey` - API key for <https://cryptoapis.io/?utm_source=package_info> services
+* `ltc_cryptoapis_key: longapikey` - API key for [CryptoAPIs.io](https://cryptoapis.io/?utm_source=package_info) services
 * `ltc_exporter_interval: 600` - how often (in seconds) need to fetch info about blocks
 
 ## Prometheus exporter
@@ -30,4 +30,4 @@ This is very simple script, which provides following metrics:
 # TYPE ltc_last_etalon_block gauge
 ```
 
-As etalon blockchain, we use Blockchain APIs from <https://cryptoapis.io/?utm_source=package_info> (the free plan is enough for that simple monitoring).
+As etalon blockchain, we use Blockchain APIs from [CryptoAPIs.io](https://cryptoapis.io/?utm_source=package_info) (the free plan is enough for that simple monitoring).
